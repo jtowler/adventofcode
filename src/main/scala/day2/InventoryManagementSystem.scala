@@ -22,14 +22,11 @@ object InventoryManagementSystem extends App {
     s1.zip(s2).map { case (c1, c2) => c1 != c2 }.count(_ == true)
   }
 
-  def remainingLetters(s1: String, s2: String): String =
-    s1.zip(s2).filter { case (x1, x2) => x1 == x2 }.map(_._1).mkString("")
-
   def differByOne(ss: List[String]): String = {
 
     def innner(current: String, remain: List[String]): Option[String] = remain match {
       case Nil => None
-      case h :: t if difference(current, h) == 1 => Some(remainingLetters(current, h))
+      case h :: _ if difference(current, h) == 1 => Some(current intersect h)
       case _ :: t => innner(current, t)
     }
 
