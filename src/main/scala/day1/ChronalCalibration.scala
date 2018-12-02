@@ -13,14 +13,10 @@ object ChronalCalibration extends App {
 
   val sumFreq = freqs.sum
 
-  def inner(n: Int, acc: Int, seenFreqs: List[Int]): Int = n match {
-    case i if i == freqs.size =>
-      inner(0, acc, seenFreqs)
-    case i =>
-      val newFreq = acc + freqs(i)
-      if (seenFreqs.contains(newFreq)) newFreq
-      else inner(n + 1, newFreq, newFreq :: seenFreqs)
+  def inner(input: Stream[Int], acc: Int, seenFreqs: Set[Int]): Int = input match {
+    case h #:: _ if seenFreqs contains h + acc => h + acc
+    case h #:: t => inner(t, h + acc, seenFreqs + (h + acc))
   }
 
-  val twiceFreq = inner(0, 0, List(0))
+  val twiceFreq = inner(Stream.continually(freqs).flatten, 0, Set(0))
 }
