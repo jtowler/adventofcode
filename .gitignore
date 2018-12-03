@@ -5,6 +5,7 @@
 
 .idea/
 project/
+src/main/resources
 dist/*
 target/
 lib_managed/
