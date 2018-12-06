@@ -2,8 +2,7 @@ package day2
 
 object InventoryManagementSystem extends App {
 
-  val file = "/Users/jack/IdeaProjects/adventofcode/src/main/resources/day2/InventoryManagementSystem.txt"
-  val codes: List[String] = utils.IOUtils.readFile(file)
+  val codes: List[String] = utils.IOUtils.readResource("InventoryManagementSystem.txt", 2)
 
   def getCounts(s: String): (Boolean, Boolean) = {
     val counts: List[Int] = s.groupBy(identity).mapValues(_.length).values.toList

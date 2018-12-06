@@ -5,7 +5,6 @@ class Grid(val coords: List[LabelCoord]) {
   private val maxX = coords.map(_.x).max
   private val maxY = coords.map(_.y).max
 
-
   private def getId(x: Int, y: Int): Int = {
     val c = new Coord(x, y)
     val distances = coords.map(_.distance(c))
@@ -18,9 +17,11 @@ class Grid(val coords: List[LabelCoord]) {
     }
   }
 
-  private val grid = List.tabulate(maxX, maxY)(getId)
-
-  private val areaMap: Map[Int, Int] = grid.flatten.groupBy(identity).mapValues(_.size).drop(-1)
+  private val areaMap: Map[Int, Int] = List.tabulate(maxX, maxY)(getId)
+    .flatten
+    .groupBy(identity)
+    .mapValues(_.size)
+    .drop(-1)
 
   def getMaxArea: Int = {
     val ignoreList = (0 until maxX).map(getId(_, 0)) ++
@@ -31,9 +32,9 @@ class Grid(val coords: List[LabelCoord]) {
   }
 
   def distancesToOtherCoordinates: Int = {
-    val allCoords = List.tabulate(maxX, maxY)(new Coord(_, _)).flatten
-    val distantCoords = allCoords.filter{ c => coords.map(_.distance(c)).sum < 10000}
-    distantCoords.size
+    List.tabulate(maxX, maxY)(new Coord(_, _))
+      .flatten
+      .count { c => coords.map(_.distance(c)).sum < 10000 }
   }
 
 }
@@ -54,9 +55,11 @@ object LabelCoord {
 }
 
 object ChronalCoordinates extends App {
-  val file = "/Users/jack/IdeaProjects/adventofcode/src/main/resources/day6/ChronalCoordinates.txt"
-  val lines = utils.IOUtils.readFile(file)
+  val lines = utils.IOUtils.readResource("ChronalCoordinates.txt", 6)
   val grid = new Grid(lines.zipWithIndex.map{ case (s, i) => LabelCoord(s, i)})
   val answer1 = grid.getMaxArea
   val answer2 = grid.distancesToOtherCoordinates
+  val real1 = 3871
+  val real2 = 44667
+  assert(real2 == answer2)
 }

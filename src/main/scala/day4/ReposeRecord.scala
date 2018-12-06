@@ -31,23 +31,24 @@ case class Line(s: String) {
 case class Guard(id: String, info: List[Line] = List()) {
   def addLine(line: Line): Guard = Guard(id, info :+ line)
 
+  private val groupedDays: Map[(Int, Int, Int), List[Line]] = info.groupBy(line => (line.year, line.month, line.day))
+
   def getSumMinutes: Int = {
-    val daily: Map[(Int, Int, Int), Int] = info
-      .groupBy(line => (line.year, line.month, line.day))
+    groupedDays
       .mapValues(lines2Minutes(_).size)
-    daily.values.sum
+      .values
+      .sum
   }
 
   def minuteFrequency(m: Int): Int = {
-    val daily: List[Int] = info
-      .groupBy(line => (line.year, line.month, line.day))
-      .mapValues(lines2Minutes).flatMap(_._2).toList
-    daily.count(_ == m)
+    groupedDays.mapValues(lines2Minutes)
+      .flatMap(_._2)
+      .toList
+      .count(_ == m)
   }
 
   def getMaxMinute: Int = {
-    val daily = info
-      .groupBy(line => (line.year, line.month, line.day))
+    val daily = groupedDays
       .mapValues(lines2Minutes)
       .values
       .flatten
@@ -72,10 +73,8 @@ case class Guard(id: String, info: List[Line] = List()) {
         case _ => inner(t, acc, sleep)
       }
     }
-
     inner(l, List(), -1)
   }
-
 }
 
 class ReposeRecord(lines: List[String]) {
@@ -108,20 +107,16 @@ class ReposeRecord(lines: List[String]) {
       case Start(id) => Guard(id, List(firstLine))
       case _ => throw new Exception("Expected Guard to Start")
     }
-
     inner(records.tail, List(firstGuard), firstGuard)
   }
-
 }
 
 object ReposeRecord extends App {
-  val file = "/Users/jack/IdeaProjects/adventofcode/src/main/resources/day4/ReposeRecord.txt"
-  val lines = utils.IOUtils.readFile(file)
+  val lines = utils.IOUtils.readResource("ReposeRecord.txt", 4)
 
   val rr = new ReposeRecord(lines)
   val maxGuard = rr.guardList.maxBy(_.getSumMinutes)
   val answer1 = maxGuard.id.toInt * maxGuard.getMaxMinute
-
 
   val maxMinute = (0 until 60) maxBy {m =>
     rr.guardList.map(_.minuteFrequency(m)).max

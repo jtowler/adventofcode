@@ -12,7 +12,7 @@ case class Rectangle(id: Int, x: Int, y: Int, width: Int, height: Int) {
 
   def area(): Int = width * height
 
-  def getAllInches(): Set[(Int, Int)] = {
+  def getAllInches: Set[(Int, Int)] = {
     val pairs = for {
       w <- x until x + width
       h <- y until y + height
@@ -40,22 +40,12 @@ object NoMatterHowYouSliceIt extends App {
     Rectangle(i.group(1).toInt, i.group(2).toInt, i.group(3).toInt, i.group(4).toInt, i.group(5).toInt)
   }
 
-  val file = "/Users/jack/IdeaProjects/adventofcode/src/main/resources/day3/NoMatterHowYouSliceIt.txt"
-  val lines = utils.IOUtils.readFile(file)
+  val lines = utils.IOUtils.readResource("NoMatterHowYouSliceIt.txt", 3)
   val rectangles = lines.map(rectangleFromString)
-
-//  val pairs = for {
-//    a <- rectangles
-//    b <- rectangles
-//    if a != b
-//  } yield a.getAllInches().intersect(b.getAllInches())
-//
-//  val overlapPairs = pairs.foldRight(Set[(Int, Int)]())(_ union _)
-//  val overlappingInches = overlapPairs.size
 
   val overlaps = for {
     a <- rectangles
-    if rectangles.filterNot(_ == a).map(_.getAllInches()).map(a.getAllInches().intersect(_).isEmpty) forall(_ == true)
+    if rectangles.filterNot(_ == a).map(_.getAllInches).map(a.getAllInches.intersect(_).isEmpty) forall(_ == true)
   } yield a
 
  val nonOverlapping = overlaps.head.id

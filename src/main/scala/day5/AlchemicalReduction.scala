@@ -2,8 +2,7 @@ package day5
 
 object AlchemicalReduction extends App{
 
-  val file = "/Users/jack/IdeaProjects/adventofcode/src/main/resources/day5/AlchemicalReduction.txt"
-  val input = utils.IOUtils.readFile(file).head
+  val input = utils.IOUtils.readResource("AlchemicalReduction.txt", 5).head
 
   def loop(n: Int, s: String): String = {
     if (n >= s.length - 2) s

@@ -3,7 +3,7 @@ package day1
 object ChronalCalibration extends App {
 
   val file = "/Users/jack/IdeaProjects/adventofcode/src/main/resources/day1/ChronalCalibration.txt"
-  val lines = utils.IOUtils.readFile(file)
+  val lines = utils.IOUtils.readResource("ChronalCalibration.txt", 1)
 
   val freqs = lines.map {
     case s if s.head == '+' => s.tail.toInt
